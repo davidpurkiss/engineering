@@ -1,0 +1,16 @@
+{
+  "name": "engineering-kb",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A public, personal engineering knowledge base — principles, patterns, practices, RFCs and decisions, written for people and agents.",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "index": "node scripts/build-index.mjs",
+    "check": "npm run validate && npm run index && git diff --exit-code -- index/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "SEE LICENSE IN README.md"
+}

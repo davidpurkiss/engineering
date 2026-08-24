@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.claude/settings.local.json
+
+# scratch: device sandbox cannot delete, remove this folder yourself
+_to_delete/

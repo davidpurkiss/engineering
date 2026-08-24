@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "evius",
+  "description": "Personal engineering knowledge base and tooling.",
+  "owner": { "name": "evius" },
+  "plugins": [
+    {
+      "name": "engineering-kb",
+      "description": "A personal engineering knowledge base — principles, patterns, practices, RFCs and decisions — with skills to look them up, apply them, and add to them.",
+      "source": "./",
+      "category": "development",
+      "version": "0.1.0",
+      "author": { "name": "evius" },
+      "homepage": "https://github.com/evius/engineering"
+    }
+  ]
+}
