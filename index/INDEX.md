@@ -2,7 +2,7 @@
 
 # Index
 
-6 entries. This file is the cheapest complete view of the knowledge
+7 entries. This file is the cheapest complete view of the knowledge
 base — one line each, enough to decide what to open. Agents should read this first and
 load only the entries that match the task.
 
@@ -22,6 +22,7 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## RFCs
 
+- · [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
 - · [AI observability](../kb/rfcs/0001-ai-observability.md) — Placeholder for a proposal on what to instrument, trace and evaluate in LLM-powered systems, and how it differs from conventional service observability.
 
 ## Decisions
@@ -31,8 +32,9 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## Recently updated
 
+- 2026-08-25 — [Controller / service / repository](../kb/patterns/controller-service-repository.md)
+- 2026-08-25 — [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md)
 - 2026-08-24 — [Optimise for deletion](../kb/principles/optimise-for-deletion.md)
-- 2026-08-24 — [Controller / service / repository](../kb/patterns/controller-service-repository.md)
 - 2026-08-24 — [Writing engineering knowledge for agents](../kb/practices/writing-for-agents.md)
 - 2026-08-24 — [AI observability](../kb/rfcs/0001-ai-observability.md)
 - 2026-08-24 — [Record decisions as ADRs in this repository](../kb/decisions/0001-record-decisions-as-adrs.md)

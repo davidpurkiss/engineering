@@ -7,15 +7,17 @@ summary: Three-layer split for request-driven services — transport in the cont
 domains: [backend, architecture]
 stack: [typescript, express, fastify]
 applies_when: You are building a request-driven HTTP or RPC service and want business logic testable without transport or a database.
-related: [principle.optimise-for-deletion]
+related: [principle.optimise-for-deletion, rfc.0002-absorbing-architecture-spec]
 created: 2026-08-24
-updated: 2026-08-24
+updated: 2026-08-25
 ---
 
-> **Migration stub.** The full specification for this pattern lives in
-> [evius/architecture-spec](https://github.com/evius/architecture-spec) under
-> `specs/controller-service-repository` and is being ported into this entry. Until that's
-> done, treat the old repo as the source of truth for the detail.
+> **Migration stub.** The layer definitions, rules and templates for this pattern live in
+> [evius/architecture-spec](https://github.com/evius/architecture-spec), partly as separate
+> files and partly embedded in `src/architectures/controller-service-repository.ts`. How
+> they get absorbed — and why they are worth absorbing — is argued in
+> [RFC 0002](../rfcs/0002-absorbing-architecture-spec.md). Until that lands, treat the old
+> repo as the source of truth for the detail.
 
 ## Problem
 

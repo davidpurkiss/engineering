@@ -14,6 +14,11 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
 
+## json-schema
+
+- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
+
 ## typescript
 
+- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
