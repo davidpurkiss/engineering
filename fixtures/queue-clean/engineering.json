@@ -1,0 +1,8 @@
+{
+  "architecture": "queue-architecture",
+  "layers": {
+    "consumer": "src/consumers",
+    "job-handler": "src/handlers",
+    "queue-manager": "src/queue"
+  }
+}

@@ -6,6 +6,10 @@ Entries grouped by the concrete technology they name. Untagged entries do not ap
 
 Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
+## bullmq
+
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.
+
 ## express
 
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
@@ -16,9 +20,15 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## json-schema
 
-- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
+- · `rfc` [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
+- ✓ `decision` [Take dependencies where they buy real tooling](../kb/decisions/0003-take-dependencies-for-tooling.md) — Repo tooling may take dev dependencies; reading the knowledge base must never require an install. Reverses the zero-dependency consequence of decision 0002.
+
+## postgres
+
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.
 
 ## typescript
 
-- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
+- · `rfc` [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.

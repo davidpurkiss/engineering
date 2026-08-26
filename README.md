@@ -18,9 +18,6 @@ The fix is to move work from *open-ended with implicit context* to *bounded with
 context*. This repo is where that explicit context lives, and the plugin is how an agent
 gets at it without loading the whole thing.
 
-> This supersedes [evius/architecture-spec](https://github.com/evius/architecture-spec),
-> whose specs are being migrated in as `pattern` entries.
-
 ## What's in here
 
 | Type | Folder | Answers | Example |
@@ -36,29 +33,43 @@ thinking in progress. Decisions are the immutable audit trail.
 
 `index/` is **generated** — never hand-edit it. Run `npm run index` after adding an entry.
 
+### Two tiers
+
+`kb/` holds judgement: when to reach for something, what it costs, how it fails. `specs/`
+holds constraint: architectures as composable layers with explicit restrictions, addressable
+rules, and code templates. Prose cannot be executed; a spec cannot explain itself. They
+cross-reference, and CI checks that every reference between them resolves.
+
 ## Structure
 
 ```
 .claude-plugin/     plugin + marketplace manifests
 docs/               how this KB works (charter, taxonomy, frontmatter, lifecycle)
-kb/                 the content — one folder per entry type
-index/              GENERATED views: all entries, by domain, by stack
-skills/             Claude Code skills that read kb/
-scripts/            validate.mjs, build-index.mjs (zero dependencies)
+kb/                 prose entries — one folder per entry type
+specs/              machine-readable specs — schema/, layers/, architectures/, rules/
+templates/          code templates referenced by architecture specs
+index/              GENERATED views: all entries, by domain, by stack, and the spec map
+skills/             Claude Code skills that read kb/ and specs/
+bin/                engineering-kb-check — the boundary checker, on PATH with the plugin
+fixtures/           tiny projects proving the checker fires
+scripts/            validate, validate-specs, build-index, check-boundaries, test-fixtures
 ```
+
+Reading any of it needs no toolchain. Running the checks needs `npm install` once.
 
 ## Using it with Claude Code
 
 ```bash
-/plugin marketplace add evius/engineering
-/plugin install engineering-kb@evius
+/plugin marketplace add davidpurkiss/engineering
+/plugin install engineering-kb@davidpurkiss
 ```
 
 That gives you:
 
 - `/engineering-kb:kb-lookup` — pull the entries relevant to what you're building
 - `/engineering-kb:kb-author` — add or amend an entry without breaking the schema
-- `/engineering-kb:architecture-review` — review a design or diff against the KB
+- `/engineering-kb:architecture-review` — review a design or diff against the KB, citing
+  rule ids and severities from the specs rather than arguing from taste
 
 Skills are also model-invocable, so Claude will reach for them on its own when a task
 looks architectural.
@@ -68,6 +79,33 @@ looks architectural.
 Everything is plain markdown. Point any agent at `AGENTS.md`, or vendor the folder into
 your project and reference it from your own rules file. `index/INDEX.md` is a compact
 map of everything, cheap to paste into a context window.
+
+## Checking a project against a spec
+
+Drop an `engineering.json` in the project root naming the architecture and mapping its
+layers onto your directories:
+
+```json
+{
+  "architecture": "queue-architecture",
+  "layers": {
+    "consumer": "src/consumers",
+    "job-handler": "src/handlers",
+    "queue-manager": "src/queue"
+  }
+}
+```
+
+Then:
+
+```bash
+engineering-kb-check .        # with the plugin installed
+npm run check:boundaries .    # from a clone of this repo
+```
+
+Every violation cites a rule id and the severity recorded in the spec, so the output is
+arguable against the rule rather than against taste. Exit code is 1 if any `error`-severity
+rule is broken, which makes it a CI step.
 
 ## Contributing
 

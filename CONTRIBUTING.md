@@ -11,7 +11,7 @@ thing anyone can send. Corrections, broken links and clarifications are always w
 3. Fill the frontmatter — see [docs/frontmatter.md](docs/frontmatter.md). `id` must equal
    `<type>.<filename>`.
 4. Write the body. Keep the template's headings; delete the guidance comments.
-5. Run the checks:
+5. Run the checks (`nvm use` and `npm install` first, once):
 
    ```bash
    npm run validate   # frontmatter, vocabulary, id/path agreement, related-link resolution
@@ -36,7 +36,8 @@ outbox` walks the same steps and runs the checks.
 
 ## Checks that run in CI
 
-`.github/workflows/validate.yml` runs `npm run validate` and then `npm run index`,
+`.github/workflows/validate.yml` installs dependencies, runs `npm run validate`, then
+`npm run index`,
 failing if the regenerated index differs from what's committed. So: run `npm run index`
 before you push.
 

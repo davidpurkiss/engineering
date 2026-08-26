@@ -1,0 +1,44 @@
+import { Worker, type Job } from 'bullmq';
+import { handle{{JobName}} } from '../handlers/{{jobName}}.handler';
+import { parse{{JobName}}Payload } from '../types/{{jobName}}.types';
+import { TerminalJobError } from '../errors';
+import { logger } from '../logger';
+
+/**
+ * Consumer for the {{queueName}} queue.
+ *
+ * Owns delivery semantics only. It does not declare the queue, does not decide
+ * retry policy, and contains no business logic — see the queue-manager and
+ * job-handler layers for those.
+ */
+export function create{{JobName}}Consumer(connection: ConnectionOptions, concurrency: number): Worker {
+  const worker = new Worker(
+    '{{queueName}}',
+    async (job: Job) => {
+      const log = logger.child({ jobId: job.id, queue: '{{queueName}}', attempt: job.attemptsMade });
+
+      // Validate at the edge: a malformed payload is a poison message, not a retry.
+      const payload = parse{{JobName}}Payload(job.data);
+      if (!payload.ok) {
+        log.warn({ issues: payload.issues }, 'invalid payload, dead-lettering');
+        throw new TerminalJobError('invalid payload');
+      }
+
+      log.info('handling');
+      await handle{{JobName}}(payload.value);
+      log.info('handled');
+    },
+    { connection, concurrency },
+  );
+
+  worker.on('failed', (job, err) => {
+    logger.error({ jobId: job?.id, err }, 'job failed');
+  });
+
+  return worker;
+}
+
+/** Drain-then-close: stop intake, await in-flight work, then release the connection. */
+export async function stop{{JobName}}Consumer(worker: Worker): Promise<void> {
+  await worker.close();
+}

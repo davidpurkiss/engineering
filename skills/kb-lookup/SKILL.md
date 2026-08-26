@@ -12,7 +12,8 @@ whole `kb/` tree — that defeats the point.
 ## Steps
 
 1. **Read the index**: `${CLAUDE_PLUGIN_ROOT}/index/INDEX.md`. One line per entry: status
-   mark, title, and a summary written to be read out of context.
+   mark, title, and a summary written to be read out of context. A `⚙` marks an entry that
+   also has a machine-readable spec.
 
 2. **Match the task.** Compare it against each `summary`, and for patterns against the
    `applies_when` line in the entry frontmatter. Filter on the status mark: `✓` stable is
@@ -29,7 +30,14 @@ whole `kb/` tree — that defeats the point.
 4. **Follow `related` ids only when the entry says the link matters.** Depth one, not a
    transitive crawl.
 
-5. **Apply and attribute.** State which entries you're applying, by title. When an entry's
+5. **Follow `⚙` when the task is to build, not to decide.** An entry marked `⚙` has
+   enforceable constraints in `specs/` — layer boundaries, rules with ids, code templates.
+   The prose tells you whether to use the pattern; the spec tells you how to stay inside
+   it. `${CLAUDE_PLUGIN_ROOT}/index/SPECS.md` is the map. For reviewing a design against
+   those constraints, use the `architecture-review` skill instead — it knows how to cite
+   rule ids and severities.
+
+6. **Apply and attribute.** State which entries you're applying, by title. When an entry's
    *when it doesn't apply* section covers the current situation, say that and don't apply
    it. When two entries pull in different directions, surface the tension instead of
    silently picking one.

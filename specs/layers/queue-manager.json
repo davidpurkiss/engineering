@@ -1,0 +1,58 @@
+{
+  "$schema": "../schema/layer.schema.json",
+  "id": "queue-manager",
+  "name": "Queue manager",
+  "purpose": "Own queue infrastructure: declaration, connection lifecycle, retry and dead-letter policy, and the enqueue API.",
+  "type": "infrastructure",
+  "responsibilities": [
+    "Declare queues, topics and dead-letter destinations",
+    "Own connection lifecycle, pooling and reconnection",
+    "Define retry counts, backoff strategy and dead-letter thresholds in one place",
+    "Expose a typed enqueue API to the rest of the system",
+    "Instrument queue depth, consumer lag and dead-letter volume"
+  ],
+  "restrictions": [
+    "Must NOT process messages",
+    "Must NOT contain business logic",
+    "Must NOT import consumers or job handlers",
+    "Must NOT hide delivery semantics callers need to reason about — at-least-once must stay visible in the API surface",
+    "Must NOT declare infrastructure as a side effect of the first enqueue; declaration is explicit and startup-time"
+  ],
+  "dependencies": {
+    "canImport": ["types", "config", "monitoring"],
+    "cannotImport": ["consumer", "job-handler", "service", "controller"]
+  },
+  "interface": {
+    "methods": [
+      {
+        "pattern": "enqueue{Job}",
+        "parameters": "(payload: {Job}, options?: EnqueueOptions)",
+        "returnType": "Promise<JobId>",
+        "async": true
+      },
+      {
+        "pattern": "declareQueues",
+        "parameters": "()",
+        "returnType": "Promise<void>",
+        "async": true
+      }
+    ]
+  },
+  "conventions": {
+    "deadLetterPolicy": {
+      "pattern": "always-configured",
+      "description": "Every queue has a dead-letter destination and a finite retry count. A queue without one turns a poison message into an infinite retry loop, which looks like load rather than a failure.",
+      "example": "{ attempts: 5, backoff: { type: 'exponential', delay: 1000 }, deadLetter: '{{queueName}}.dlq' }"
+    },
+    "singleSourceOfPolicy": {
+      "pattern": "policy-here-not-there",
+      "description": "Retry, backoff and DLQ thresholds live here and nowhere else. A consumer or handler that implements its own retry defeats the broker's accounting and hides failures from queue metrics."
+    }
+  },
+  "agentHints": [
+    "Declaring infrastructure is a startup step, not a lazy side effect — make it explicit and idempotent.",
+    "Enqueue APIs should be typed per job, not a generic send(name, payload).",
+    "If you find yourself adding a retry loop outside this layer, the policy here is wrong instead.",
+    "Queue depth without consumer lag is a misleading metric; instrument both."
+  ]
+}

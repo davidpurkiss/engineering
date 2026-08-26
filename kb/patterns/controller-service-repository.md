@@ -7,17 +7,15 @@ summary: Three-layer split for request-driven services — transport in the cont
 domains: [backend, architecture]
 stack: [typescript, express, fastify]
 applies_when: You are building a request-driven HTTP or RPC service and want business logic testable without transport or a database.
-related: [principle.optimise-for-deletion, rfc.0002-absorbing-architecture-spec]
+related: [principle.optimise-for-deletion, rfc.0002-machine-readable-specs]
 created: 2026-08-24
 updated: 2026-08-25
 ---
 
-> **Migration stub.** The layer definitions, rules and templates for this pattern live in
-> [evius/architecture-spec](https://github.com/evius/architecture-spec), partly as separate
-> files and partly embedded in `src/architectures/controller-service-repository.ts`. How
-> they get absorbed — and why they are worth absorbing — is argued in
-> [RFC 0002](../rfcs/0002-absorbing-architecture-spec.md). Until that lands, treat the old
-> repo as the source of truth for the detail.
+> **Draft.** The shape is right but the detail is thin — the implementation notes and
+> trade-offs sections are still to write. [RFC 0002](../rfcs/0002-machine-readable-specs.md)
+> proposes a machine-readable spec to sit alongside this entry and carry the layer
+> boundaries as enforceable rules.
 
 ## Problem
 
@@ -34,8 +32,8 @@ layers, and an event-processing worker wants a different shape.
 
 ## Solution
 
-<!-- TODO: port the layer definitions, minimal templates and explicit rules from
-     architecture-spec. Include the mermaid diagram of the call direction. -->
+<!-- TODO: add the mermaid diagram of call direction, and the minimal per-layer
+     templates once RFC 0002 settles where templates live. -->
 
 Three layers, dependencies pointing one way only:
 
@@ -48,12 +46,12 @@ Three layers, dependencies pointing one way only:
 
 ## Implementation notes
 
-<!-- TODO: port. Cover transaction boundaries (they belong at the service layer),
+<!-- TODO: cover transaction boundaries (they belong at the service layer),
      dependency injection approach, and where DTO-to-domain mapping lives. -->
 
 ## Trade-offs
 
-<!-- TODO: port. -->
+<!-- TODO -->
 
 ## Failure modes
 
@@ -73,5 +71,3 @@ Three layers, dependencies pointing one way only:
 - **Nothing at all** — a handler that does the work is correct for a small, stable service.
 
 ## Sources
-
-- https://github.com/evius/architecture-spec

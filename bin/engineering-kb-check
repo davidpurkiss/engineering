@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Check a project's imports against the architecture named in its engineering.json.
+# On PATH whenever the engineering-kb plugin is enabled.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec node "$ROOT/scripts/check-boundaries.mjs" "$@"

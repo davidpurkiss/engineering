@@ -38,6 +38,20 @@ updated: 2026-08-24
 | `related` | no | list | Other entry `id`s. Validated: must resolve. |
 | `supersedes` | no | list | Entry `id`s this replaces. The superseded entry should be set to `superseded`. |
 | `sources` | no | list | URLs backing the entry. |
+| `spec` | no | string | Links the entry to a machine-readable spec: `architecture.<id>`, `layer.<id>` or `ruleset.<id>`. Validated to resolve to a file under `specs/`. |
+
+## The `spec` field
+
+An entry with a `spec` has a machine-readable counterpart under `specs/`. The two tiers
+divide like this, and the division is the whole point:
+
+- The **entry** holds judgement — why this shape, what it costs, how it fails in
+  production, and when to reach for something else.
+- The **spec** holds constraint — layers, responsibilities, restrictions, rules, templates.
+
+So an entry with a `spec` should **not** restate the layer boundaries. It links to them and
+explains why they are drawn where they are. If you find yourself copying a `restrictions`
+list into prose, the entry is doing the spec's job and the two will drift apart.
 
 ## Vocabulary: `domains`
 
@@ -67,5 +81,6 @@ superseded   Replaced. Must point at the replacement via the new entry's `supers
 
 `scripts/validate.mjs` uses a deliberately small YAML subset — scalars, quoted strings,
 inline `[a, b]` arrays and `- item` block lists. No nesting, no anchors, no multi-line
-scalars. That keeps the repo dependency-free. If you need richer YAML, you probably need a
-simpler frontmatter instead.
+scalars. It predates `decision.0003-take-dependencies-for-tooling` and survives because it works, not
+because a dependency would be unwelcome. If you need richer YAML, reach for a parser — or ask
+whether the frontmatter should be simpler.

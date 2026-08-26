@@ -12,9 +12,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Validate frontmatter
+          node-version-file: '.nvmrc'
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Validate entries and specs
         run: npm run validate
+      - name: Boundary checker fires on the fixtures
+        run: npm run test:fixtures
       - name: Rebuild index and check it was committed
         run: |
           npm run index

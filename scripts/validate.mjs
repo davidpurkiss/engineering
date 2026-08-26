@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Validates every entry under kb/ against the schema in docs/frontmatter.md.
-import { loadEntries, FOLDER_TYPE, VOCAB, REQUIRED } from './lib.mjs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { loadEntries, FOLDER_TYPE, VOCAB, REQUIRED, ROOT } from './lib.mjs';
 
 const entries = loadEntries();
 const problems = [];
@@ -59,6 +61,21 @@ for (const entry of entries) {
 
   if (typeof d.summary === 'string' && d.summary.length > 200) {
     fail(entry, `summary is ${d.summary.length} chars (max 200)`);
+  }
+
+  // A spec: link must resolve to a real file under specs/. This is half of what keeps
+  // the two tiers from drifting; validate-specs.mjs does the other half.
+  if (d.spec !== undefined) {
+    const SPEC_DIR = { architecture: 'architectures', layer: 'layers', ruleset: 'rules' };
+    const m = String(d.spec).match(/^([a-z]+)\.([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+    if (!m) {
+      fail(entry, `spec \`${d.spec}\` must look like \`architecture.<id>\`, \`layer.<id>\` or \`ruleset.<id>\``);
+    } else if (!SPEC_DIR[m[1]]) {
+      fail(entry, `spec kind \`${m[1]}\` is not one of [${Object.keys(SPEC_DIR).join(', ')}]`);
+    } else {
+      const rel = `specs/${SPEC_DIR[m[1]]}/${m[2]}.json`;
+      if (!existsSync(join(ROOT, rel))) fail(entry, `spec \`${d.spec}\` does not resolve to ${rel}`);
+    }
   }
 
   for (const field of ['created', 'updated']) {

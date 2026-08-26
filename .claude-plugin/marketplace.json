@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "evius",
+  "name": "davidpurkiss",
   "description": "Personal engineering knowledge base and tooling.",
-  "owner": { "name": "evius" },
+  "owner": { "name": "davidpurkiss" },
   "plugins": [
     {
       "name": "engineering-kb",
@@ -10,8 +10,8 @@
       "source": "./",
       "category": "development",
       "version": "0.1.0",
-      "author": { "name": "evius" },
-      "homepage": "https://github.com/evius/engineering"
+      "author": { "name": "davidpurkiss" },
+      "homepage": "https://github.com/davidpurkiss/engineering"
     }
   ]
 }

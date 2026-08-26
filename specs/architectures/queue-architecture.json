@@ -1,0 +1,46 @@
+{
+  "$schema": "../schema/architecture.schema.json",
+  "id": "queue-architecture",
+  "name": "Queue architecture",
+  "description": "Asynchronous work split three ways: a consumer that owns delivery semantics, a job handler that owns the work, and a queue manager that owns the infrastructure and its policy.",
+  "appliesWhen": "Work must happen outside a request, may be retried, and must survive the process that scheduled it.",
+  "layers": ["consumer", "job-handler", "queue-manager"],
+  "dependencyFlow": "unidirectional",
+  "errorHandling": "per-layer",
+  "rulesets": ["shared"],
+  "options": {
+    "broker": {
+      "choices": ["bullmq", "pg-boss", "aws-sqs", "rabbitmq"],
+      "default": "bullmq",
+      "description": "Which broker backs the queue. Changes the queue-manager template only; consumer and handler are unaffected by design."
+    },
+    "handlerStyle": {
+      "choices": ["class", "functional"],
+      "default": "functional",
+      "description": "How job handlers are structured. Functional handlers are easier to test; class handlers suit handlers with several injected collaborators."
+    },
+    "scheduling": {
+      "choices": ["none", "delayed", "recurring"],
+      "default": "none",
+      "description": "Whether the architecture also schedules work. Recurring scheduling adds a leader-election concern that none of these three layers own."
+    }
+  },
+  "templates": [
+    {
+      "layer": "consumer",
+      "language": "typescript",
+      "framework": "bullmq",
+      "path": "templates/typescript/bullmq/consumer.ts.tmpl"
+    }
+  ],
+  "incompatible": [
+    {
+      "layers": ["consumer", "queue-manager"],
+      "reason": "A consumer that configures its own queue cannot be tested without a broker and duplicates retry policy. Inject the connection instead."
+    },
+    {
+      "layers": ["job-handler", "consumer"],
+      "reason": "A handler that reaches back into the consumer can acknowledge its own message, which breaks the single point of delivery accounting."
+    }
+  ]
+}

@@ -27,8 +27,7 @@ Body: statement, why, what it looks like in practice, when it doesn't apply.
 ### pattern
 
 A reusable solution shape for a recurring problem: architecture, data, integration,
-delivery. This is where the bulk of the KB lives, and where `architecture-spec` content
-lands.
+delivery. This is where the bulk of the KB lives.
 
 Body: problem, context, solution, implementation notes, trade-offs, failure modes,
 alternatives.

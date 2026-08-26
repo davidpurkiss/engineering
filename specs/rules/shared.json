@@ -1,0 +1,111 @@
+{
+  "$schema": "../schema/ruleset.schema.json",
+  "id": "shared",
+  "description": "Rules that hold across every architecture in this knowledge base. Architecture-specific rules belong in their own ruleset.",
+  "rules": [
+    {
+      "id": "no-circular-dependencies",
+      "scope": "*",
+      "rule": "No circular dependencies between modules or layers",
+      "severity": "error",
+      "category": "dependency",
+      "rationale": "A cycle means neither participant can be understood, tested or deleted on its own."
+    },
+    {
+      "id": "unidirectional-dependency-flow",
+      "scope": "*",
+      "rule": "Dependencies flow in one direction only, along the order declared by the architecture",
+      "severity": "error",
+      "category": "dependency",
+      "rationale": "The direction is what makes a layer replaceable. Once it is bidirectional the layering is decorative."
+    },
+    {
+      "id": "depend-on-abstractions",
+      "scope": "*",
+      "rule": "Depend on interfaces, not concrete implementations, across a layer boundary",
+      "severity": "warning",
+      "category": "dependency"
+    },
+    {
+      "id": "consumer-owns-no-infrastructure",
+      "scope": "consumer",
+      "rule": "Consumers must not construct or configure queue infrastructure; take the connection by injection",
+      "severity": "error",
+      "category": "dependency",
+      "rationale": "A consumer that declares its own queue cannot be tested without a broker, and duplicates retry policy that belongs in one place.",
+      "check": {
+        "kind": "import-boundary",
+        "from": "consumer",
+        "denyImportsFrom": ["queue-manager"]
+      }
+    },
+    {
+      "id": "handler-is-transport-agnostic",
+      "scope": "job-handler",
+      "rule": "Job handlers must not import the consumer or the queue manager, or any broker client",
+      "severity": "error",
+      "category": "dependency",
+      "rationale": "Transport independence is what makes the handler unit-testable with a plain object, and what lets the same work move between brokers.",
+      "check": {
+        "kind": "import-boundary",
+        "from": "job-handler",
+        "denyImportsFrom": ["consumer", "queue-manager", "bullmq", "sqs-consumer", "amqplib"]
+      }
+    },
+    {
+      "id": "handlers-are-idempotent",
+      "scope": "job-handler",
+      "rule": "Job handlers must be safe to run more than once on the same payload",
+      "severity": "error",
+      "category": "error-handling",
+      "rationale": "Every mainstream broker is at-least-once. Redelivery is normal operation, not an incident."
+    },
+    {
+      "id": "classify-failures-explicitly",
+      "scope": "job-handler",
+      "rule": "Failures must be thrown as typed errors declaring whether they are retryable",
+      "severity": "error",
+      "category": "error-handling",
+      "rationale": "Retrying a terminal failure burns the retry budget and delays the dead-letter that would have surfaced the bug."
+    },
+    {
+      "id": "dead-letter-configured",
+      "scope": "queue-manager",
+      "rule": "Every queue declares a finite retry count and a dead-letter destination",
+      "severity": "error",
+      "category": "error-handling",
+      "rationale": "Without one, a poison message becomes an infinite retry loop that reads as load rather than failure."
+    },
+    {
+      "id": "bounded-consumer-concurrency",
+      "scope": "consumer",
+      "rule": "Concurrency is configured explicitly, never left at the client default",
+      "severity": "warning",
+      "category": "code-quality",
+      "rationale": "The right number is a property of the slowest downstream dependency, which the broker knows nothing about."
+    },
+    {
+      "id": "instrument-depth-and-lag",
+      "scope": "queue-manager",
+      "rule": "Expose queue depth, consumer lag and dead-letter volume as metrics",
+      "severity": "warning",
+      "category": "observability",
+      "rationale": "Depth alone cannot distinguish a fast producer from a stalled consumer."
+    },
+    {
+      "id": "correlate-job-logs",
+      "scope": "*",
+      "rule": "Log job id and correlation id on every job lifecycle event",
+      "severity": "warning",
+      "category": "observability",
+      "rationale": "Asynchronous work is untraceable after the fact without a key that survives the queue hop."
+    },
+    {
+      "id": "no-hardcoded-secrets",
+      "scope": "*",
+      "rule": "Never hardcode secrets, connection strings or credentials",
+      "severity": "error",
+      "category": "security"
+    }
+  ]
+}

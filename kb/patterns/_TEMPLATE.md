@@ -7,6 +7,7 @@ summary: One sentence, max 200 chars. What problem this solves, stated so it's u
 domains: [backend]
 stack: []
 applies_when: The trigger condition in one line. This is what an agent matches a task against.
+spec: # optional — architecture.<id> if a machine-readable spec backs this entry. Delete if not.
 related: []
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
@@ -24,7 +25,11 @@ updated: YYYY-MM-DD
 ## Solution
 
 <!-- The shape. A diagram (mermaid) earns its place when the interaction order or the
-     failure boundary is the point. Otherwise prose plus a minimal snippet. -->
+     failure boundary is the point. Otherwise prose plus a minimal snippet.
+
+     If this entry has a `spec:`, do NOT restate the layer boundaries here — link to the
+     spec and explain why the boundaries fall where they do. Copying a `restrictions`
+     list into prose guarantees the two will drift. -->
 
 ## Implementation notes
 

@@ -1,0 +1,66 @@
+{
+  "$schema": "../schema/layer.schema.json",
+  "id": "consumer",
+  "name": "Queue consumer",
+  "purpose": "Take messages off a queue and hand each one to a job handler, owning acknowledgement and delivery semantics.",
+  "type": "processing",
+  "responsibilities": [
+    "Subscribe to or poll the queue and pull messages",
+    "Deserialise and validate the message payload before handing it on",
+    "Invoke the job handler with a typed payload",
+    "Acknowledge on success and negatively acknowledge or dead-letter on failure",
+    "Honour the configured concurrency limit",
+    "Translate broker-specific delivery events into a uniform outcome"
+  ],
+  "restrictions": [
+    "Must NOT contain business logic — it delegates, it does not decide",
+    "Must NOT create, declare or configure queue infrastructure",
+    "Must NOT re-enqueue its own retries; retry and backoff are broker policy owned by the queue manager",
+    "Must NOT acknowledge a message whose handler threw",
+    "Must NOT assume a message is delivered exactly once"
+  ],
+  "dependencies": {
+    "canImport": ["job-handler", "types", "validation", "config"],
+    "cannotImport": ["queue-manager", "repository", "controller", "orm"]
+  },
+  "interface": {
+    "methods": [
+      {
+        "pattern": "handle{Message}",
+        "parameters": "(message: {Message}, context: DeliveryContext)",
+        "returnType": "Promise<void>",
+        "async": true
+      },
+      {
+        "pattern": "start",
+        "parameters": "()",
+        "returnType": "Promise<void>",
+        "async": true
+      },
+      {
+        "pattern": "stop",
+        "parameters": "()",
+        "returnType": "Promise<void>",
+        "async": true
+      }
+    ],
+    "errorHandling": "A handler throwing is a negative acknowledgement. The consumer never converts a failure into a silent success."
+  },
+  "conventions": {
+    "gracefulShutdown": {
+      "pattern": "drain-then-close",
+      "description": "On shutdown, stop accepting new messages, wait for in-flight handlers to finish within a bounded timeout, then close the connection. A consumer killed mid-message must leave that message unacknowledged so it redelivers.",
+      "example": "await consumer.stop(); // stops intake, awaits in-flight, closes"
+    },
+    "payloadValidation": {
+      "pattern": "validate-at-the-edge",
+      "description": "Validate the deserialised payload before the handler sees it. A malformed message is a poison message and belongs in the dead-letter queue, not in a retry loop."
+    }
+  },
+  "agentHints": [
+    "The consumer is thin. If it is making decisions about the work, that logic belongs in the job handler.",
+    "Take the queue connection by injection — never construct it here.",
+    "A message that fails validation is not retryable. Dead-letter it rather than throwing into the retry path.",
+    "Bound concurrency explicitly; the broker default is rarely the right number for the downstream dependency."
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/davidpurkiss/engineering/main/specs/schema/architecture.schema.json",
+  "title": "Architecture",
+  "description": "An architecture composes layers by id. It must not redefine a layer inline — that is what makes layers reusable across architectures.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "description", "layers", "dependencyFlow", "rulesets"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "appliesWhen": {
+      "type": "string",
+      "description": "The trigger condition, one line. What an agent matches a task against."
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+      "description": "Layer ids, in dependency order. Every id must resolve to specs/layers/<id>.json."
+    },
+    "dependencyFlow": { "enum": ["unidirectional", "bidirectional"] },
+    "errorHandling": { "enum": ["per-layer", "centralised-middleware", "hybrid"] },
+    "rulesets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Ruleset ids that apply. Every id must resolve to specs/rules/<id>.json."
+    },
+    "options": {
+      "type": "object",
+      "description": "Configurable variations, so one architecture covers a family rather than spawning near-duplicates.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["choices", "default", "description"],
+        "properties": {
+          "choices": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "default": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "templates": {
+      "type": "array",
+      "description": "Code templates keyed by layer and stack. Paths are repo-relative and must exist.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["layer", "language", "path"],
+        "properties": {
+          "layer": { "type": "string" },
+          "language": { "type": "string" },
+          "framework": { "type": "string" },
+          "dataAccess": { "type": "string" },
+          "path": { "type": "string", "pattern": "^templates/.+\\.tmpl$" }
+        }
+      }
+    },
+    "incompatible": {
+      "type": "array",
+      "description": "Layer pairs that must not depend on each other, with the reason. Redundant with cannotImport by design: this states it at the architecture level where the reason lives.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["layers", "reason"],
+        "properties": {
+          "layers": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

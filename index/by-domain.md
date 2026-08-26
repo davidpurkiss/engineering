@@ -8,8 +8,9 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## agentic
 
-- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
+- · `rfc` [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
 - ✓ `decision` [Organise by entry type with domain as frontmatter tags](../kb/decisions/0002-kb-structure.md) — The kb/ tree is split by entry type; domain, stack and maturity are frontmatter tags rolled up into generated indexes.
+- ✓ `decision` [Take dependencies where they buy real tooling](../kb/decisions/0003-take-dependencies-for-tooling.md) — Repo tooling may take dev dependencies; reading the knowledge base must never require an install. Reverses the zero-dependency consequence of decision 0002.
 - · `practice` [Writing engineering knowledge for agents](../kb/practices/writing-for-agents.md) — Structure written knowledge so an agent can find and load the small relevant slice, rather than being handed everything or nothing.
 
 ## ai
@@ -18,8 +19,8 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## architecture
 
-- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
+- · `rfc` [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
 - · `principle` [Optimise for deletion](../kb/principles/optimise-for-deletion.md) — Design each component so it can be removed in an afternoon; ease of deletion is the most reliable proxy for loose coupling.
 - ✓ `decision` [Organise by entry type with domain as frontmatter tags](../kb/decisions/0002-kb-structure.md) — The kb/ tree is split by entry type; domain, stack and maturity are frontmatter tags rolled up into generated indexes.
 - ✓ `decision` [Record decisions as ADRs in this repository](../kb/decisions/0001-record-decisions-as-adrs.md) — Architectural and KB-level decisions are recorded as numbered, append-only ADRs under kb/decisions/.
@@ -27,14 +28,24 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 ## backend
 
 - · `pattern` [Controller / service / repository](../kb/patterns/controller-service-repository.md) — Three-layer split for request-driven services — transport in the controller, business rules in the service, data access in the repository.
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.
 
 ## delivery
 
-- · `rfc` [Absorbing architecture-spec as machine-readable assets](../kb/rfcs/0002-absorbing-architecture-spec.md) — Port architecture-spec's schema into JSON-Schema-validated specs and real template files, with a generated manifest and executable boundary checks.
+- · `rfc` [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
 - ✓ `decision` [Organise by entry type with domain as frontmatter tags](../kb/decisions/0002-kb-structure.md) — The kb/ tree is split by entry type; domain, stack and maturity are frontmatter tags rolled up into generated indexes.
 - ✓ `decision` [Record decisions as ADRs in this repository](../kb/decisions/0001-record-decisions-as-adrs.md) — Architectural and KB-level decisions are recorded as numbered, append-only ADRs under kb/decisions/.
+- ✓ `decision` [Take dependencies where they buy real tooling](../kb/decisions/0003-take-dependencies-for-tooling.md) — Repo tooling may take dev dependencies; reading the knowledge base must never require an install. Reverses the zero-dependency consequence of decision 0002.
 - · `practice` [Writing engineering knowledge for agents](../kb/practices/writing-for-agents.md) — Structure written knowledge so an agent can find and load the small relevant slice, rather than being handed everything or nothing.
+
+## messaging
+
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.
 
 ## observability
 
 - · `rfc` [AI observability](../kb/rfcs/0001-ai-observability.md) — Placeholder for a proposal on what to instrument, trace and evaluate in LLM-powered systems, and how it differs from conventional service observability.
+
+## platform
+
+- · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.

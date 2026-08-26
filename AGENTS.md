@@ -18,8 +18,10 @@ domain and stack are tags.
    than were told. Ask before asserting an opinion the author hasn't expressed.
 3. **One idea per entry.** If a new entry needs two summaries, it's two entries.
 4. **Every entry states when it does not apply.** No exceptions.
-5. **Run `npm run validate` before declaring a change done.** It is fast and zero-dependency.
+5. **Run `npm run validate` before declaring a change done.** Needs `npm install` once.
 6. **Frontmatter `id` must equal `<type>.<filename-without-.md>`.** Validation enforces it.
+7. **Never change `fixtures/queue-violations/` to make a check pass.** It is wrong on
+   purpose. If the checker stops flagging it, the checker regressed.
 7. **`kb/decisions/` is append-only.** To change a decision, add a new ADR that
    `supersedes` the old one and set the old one to `status: superseded`.
 
@@ -43,9 +45,35 @@ Prefer loading the smallest useful set:
 2. Match the task against `summary` and `applies_when`.
 3. Load only the matching entry files.
 4. Follow `related` ids only when the entry itself says the link matters.
+5. If the task is to *build* rather than to decide, and a matching entry is marked `⚙`,
+   read `index/SPECS.md` and load the architecture spec too. The entry says whether to use
+   the shape; the spec says how to stay inside it.
 
 Do not read the whole `kb/` tree into context. That is the failure mode this structure
 exists to prevent.
+
+## The two tiers
+
+An entry with a `spec:` field has a machine-readable counterpart under `specs/`. Keep the
+division: the entry holds judgement (why this shape, what it costs, how it fails, when to
+use something else), the spec holds constraint (layers, restrictions, rules, templates).
+An entry must never restate a spec's `restrictions` list — link to it and explain it.
+
+## Working in `specs/`
+
+`specs/` is the machine-readable tier: layers, architectures composing them by id, and
+rulesets. Four things to know:
+
+- **Architectures compose layers by id. They never redefine a layer inline.** If an
+  architecture needs a layer that does not exist, add `specs/layers/<id>.json` first.
+- **`restrictions` and `dependencies.cannotImport` are required and must be non-empty.**
+  The boundary is the load-bearing part of a layer definition, not an appendix.
+- **A rule's `check` must agree with the layer it constrains.** If a rule denies
+  `consumer → queue-manager`, then `specs/layers/consumer.json` must list `queue-manager`
+  in `cannotImport`. `npm run validate:specs` enforces this; it is what stops the two tiers
+  drifting apart while each looks fine on its own.
+- **Every reference is dereferenced in CI** — layer ids, ruleset ids and template paths. A
+  registry that is never dereferenced drifts silently.
 
 ## Repo layout
 

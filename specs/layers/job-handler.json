@@ -1,0 +1,54 @@
+{
+  "$schema": "../schema/layer.schema.json",
+  "id": "job-handler",
+  "name": "Job handler",
+  "purpose": "Execute the work for a single job, with no knowledge of how that job was delivered.",
+  "type": "business",
+  "responsibilities": [
+    "Implement the unit of work for one job type",
+    "Be idempotent — the same job may arrive more than once",
+    "Classify failures as retryable or terminal, explicitly",
+    "Emit a structured outcome that the consumer can act on",
+    "Enforce its own timeout rather than relying on the broker's visibility window"
+  ],
+  "restrictions": [
+    "Must NOT know which broker delivered the job",
+    "Must NOT acknowledge, negatively acknowledge or dead-letter — that is the consumer's job",
+    "Must NOT schedule or enqueue its own retries",
+    "Must NOT assume exactly-once delivery, or that it is the only handler running",
+    "Must NOT import a queue client library"
+  ],
+  "dependencies": {
+    "canImport": ["service", "repository", "types", "config"],
+    "cannotImport": ["consumer", "queue-manager", "bullmq", "sqs-consumer", "amqplib"]
+  },
+  "interface": {
+    "methods": [
+      {
+        "pattern": "handle",
+        "parameters": "(job: {Job})",
+        "returnType": "Promise<JobResult>",
+        "async": true
+      }
+    ],
+    "errorHandling": "Throw a typed error carrying retryability. A bare throw is treated as retryable, which is the safe default but a poor one to rely on."
+  },
+  "conventions": {
+    "idempotency": {
+      "pattern": "key-and-check",
+      "description": "Derive a stable idempotency key from the job payload, not from the delivery. Check-and-set before doing side-effectful work so a redelivery is a cheap no-op.",
+      "example": "const key = `{{jobName}}:${job.entityId}:${job.version}`;"
+    },
+    "failureClassification": {
+      "pattern": "typed-errors",
+      "description": "A validation failure or a 4xx from a dependency is terminal — retrying will not help. A timeout, a 5xx or a lock conflict is retryable. Say which; do not make the consumer guess.",
+      "example": "throw new TerminalJobError('unknown entity', { jobId });"
+    }
+  },
+  "agentHints": [
+    "This is the layer worth unit-testing. It should be callable with a plain object and no infrastructure.",
+    "Write the idempotency check before the side effect, not after.",
+    "If the handler needs to know the retry count to make a decision, take it as a parameter — do not reach for the broker.",
+    "Long-running work belongs behind a checkpoint, not inside one job that exceeds the visibility timeout."
+  ]
+}

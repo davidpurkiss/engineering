@@ -3,8 +3,8 @@
   "displayName": "Engineering KB",
   "description": "A personal engineering knowledge base — principles, patterns, practices, RFCs and decisions — with skills to look them up, apply them, and add to them.",
   "version": "0.1.0",
-  "author": { "name": "evius" },
-  "homepage": "https://github.com/evius/engineering",
-  "repository": "https://github.com/evius/engineering",
+  "author": { "name": "davidpurkiss" },
+  "homepage": "https://github.com/davidpurkiss/engineering",
+  "repository": "https://github.com/davidpurkiss/engineering",
   "license": "MIT"
 }

@@ -2,7 +2,7 @@
 // Regenerates index/. Never hand-edit the output — run `npm run index`.
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadEntries, INDEX_DIR, TYPE_ORDER, GENERATED_HEADER } from './lib.mjs';
+import { loadEntries, loadSpecs, INDEX_DIR, TYPE_ORDER, GENERATED_HEADER } from './lib.mjs';
 
 const entries = loadEntries().filter((e) => e.data?.id);
 mkdirSync(INDEX_DIR, { recursive: true });
@@ -23,7 +23,8 @@ const byTitle = (a, b) => String(a.data.title).localeCompare(String(b.data.title
 const line = (e, { showType = false } = {}) => {
   const mark = STATUS_MARK[e.data.status] ?? '?';
   const type = showType ? ` \`${e.data.type}\`` : '';
-  return `- ${mark}${type} [${e.data.title}](../${e.relPath}) — ${e.data.summary}`;
+  const spec = e.data.spec ? ' \u2699' : '';
+  return `- ${mark}${type} [${e.data.title}](../${e.relPath})${spec} — ${e.data.summary}`;
 };
 
 const legend = [
@@ -86,4 +87,55 @@ const stacks = rollup(
   'Entries grouped by the concrete technology they name. Untagged entries do not appear here.',
 );
 
-console.log(`✓ index/ rebuilt — ${entries.length} entries, ${domains} domains, ${stacks} stack tags`);
+// ------------------------------------------------------------------ SPECS.md
+const specs = loadSpecs();
+{
+  // Backlinks are derived from the entries' own spec: fields, so they cannot drift.
+  const proseFor = new Map();
+  for (const e of entries) {
+    if (e.data.spec) proseFor.set(e.data.spec, e);
+  }
+
+  const out = [GENERATED_HEADER, '', '# Specs', '',
+    'Machine-readable constraints. Find the architecture whose *applies when* matches the',
+    'task, then load its JSON and the layer specs it composes. Rules are listed here so a',
+    'finding can cite an id without reading every ruleset.', ''];
+
+  out.push('## Architectures', '');
+  for (const { rel, data: a } of specs.architectures) {
+    const prose = proseFor.get(`architecture.${a.id}`);
+    out.push(`### \`${a.id}\` — ${a.name}`, '');
+    if (a.appliesWhen) out.push(`**Applies when:** ${a.appliesWhen}`, '');
+    out.push(`- Layers: ${a.layers.join(' → ')}`);
+    out.push(`- Rulesets: ${a.rulesets.join(', ')}`);
+    out.push(`- Templates: ${(a.templates ?? []).length}`);
+    out.push(`- Spec: [\`${rel}\`](../${rel})`);
+    out.push(prose ? `- Judgement: [${prose.data.title}](../${prose.relPath})` : '- Judgement: _no prose entry yet_');
+    out.push('');
+  }
+  if (!specs.architectures.length) out.push('_None yet._', '');
+
+  out.push('## Layers', '', '| id | type | must not import |', '|---|---|---|');
+  for (const { data: l } of specs.layers) {
+    out.push(`| [\`${l.id}\`](../specs/layers/${l.id}.json) | ${l.type} | ${l.dependencies.cannotImport.join(', ') || '—'} |`);
+  }
+  out.push('');
+
+  out.push('## Rules', '',
+    'A rule with a check is mechanically enforceable; the rest need judgement.', '',
+    '| id | scope | severity | check | rule |', '|---|---|---|---|---|');
+  for (const { data: rs } of specs.rulesets) {
+    for (const r of rs.rules) {
+      out.push(`| \`${r.id}\` | ${r.scope} | ${r.severity} | ${r.check ? r.check.kind : '—'} | ${r.rule} |`);
+    }
+  }
+  out.push('');
+
+  writeFileSync(join(INDEX_DIR, 'SPECS.md'), out.join('\n'));
+}
+
+const ruleCount = specs.rulesets.reduce((n, r) => n + r.data.rules.length, 0);
+console.log(
+  `✓ index/ rebuilt — ${entries.length} entries, ${domains} domains, ${stacks} stack tags; ` +
+    `${specs.architectures.length} architectures, ${specs.layers.length} layers, ${ruleCount} rules`,
+);

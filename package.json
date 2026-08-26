@@ -5,12 +5,19 @@
   "description": "A public, personal engineering knowledge base — principles, patterns, practices, RFCs and decisions, written for people and agents.",
   "type": "module",
   "scripts": {
-    "validate": "node scripts/validate.mjs",
+    "validate": "npm run validate:kb && npm run validate:specs",
+    "validate:kb": "node scripts/validate.mjs",
+    "validate:specs": "node scripts/validate-specs.mjs",
     "index": "node scripts/build-index.mjs",
-    "check": "npm run validate && npm run index && git diff --exit-code -- index/"
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "test:fixtures": "node scripts/test-fixtures.mjs",
+    "check": "npm run validate && npm run test:fixtures && npm run index && git diff --exit-code -- index/"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "license": "SEE LICENSE IN README.md"
 }

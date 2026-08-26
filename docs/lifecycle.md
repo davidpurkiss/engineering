@@ -41,6 +41,20 @@ ADRs are append-only. Once `stable`, the text doesn't change except for typos. C
 mind? New ADR, `supersedes` the old one, old one goes to `superseded`. The value of the
 series is that it shows what you knew at the time.
 
+### Partial reversals
+
+`supersedes` replaces a whole decision. Reversing one *consequence* of a decision whose main
+choice still stands is a different thing, and the frontmatter has no field for it.
+
+Convention: write a new ADR that states the reversal in its Context, links the original via
+`related`, and leave the original at `status: stable`. Do not mark a decision superseded when
+most of it survives — that hides a decision which is still in force.
+`decision.0003-take-dependencies-for-tooling` reverses the zero-dependency consequence of
+`decision.0002-kb-structure` this way, while the structural decision in 0002 stands.
+
+If this happens often enough to need machine-readability, add an `amends` field. A single
+instance does not justify one.
+
 ## Review cadence
 
 Every entry has `updated`. `index/INDEX.md` sorts by it, so staleness is visible without
