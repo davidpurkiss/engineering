@@ -2,7 +2,7 @@
 
 # Index
 
-9 entries. This file is the cheapest complete view of the knowledge
+10 entries. This file is the cheapest complete view of the knowledge
 base — one line each, enough to decide what to open. Agents should read this first and
 load only the entries that match the task.
 
@@ -25,6 +25,7 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 - · [AI observability](../kb/rfcs/0001-ai-observability.md) — Placeholder for a proposal on what to instrument, trace and evaluate in LLM-powered systems, and how it differs from conventional service observability.
 - · [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
+- · [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Turn the sentence a spec already contains into a continuously asserted runtime check, so a handoff between systems cannot fail silently while every component reports success.
 
 ## Decisions
 
@@ -34,6 +35,7 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## Recently updated
 
+- 2026-08-27 — [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md)
 - 2026-08-25 — [Controller / service / repository](../kb/patterns/controller-service-repository.md)
 - 2026-08-25 — [Queue architecture](../kb/patterns/queue-architecture.md)
 - 2026-08-25 — [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md)
