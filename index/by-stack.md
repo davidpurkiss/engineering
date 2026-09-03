@@ -25,12 +25,12 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 ## otel
 
-- · `rfc` [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Turn the sentence a spec already contains into a continuously asserted runtime check, so a handoff between systems cannot fail silently while every component reports success.
+- · `rfc` [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Extract the assertion a requirement already contains into a continuously checked runtime invariant, so a handoff between systems cannot fail silently while every component reports success.
 
 ## postgres
 
 - · `pattern` [Queue architecture](../kb/patterns/queue-architecture.md) ⚙ — Move work out of the request into a broker, split three ways so delivery semantics, business logic and infrastructure policy each have exactly one owner.
-- · `rfc` [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Turn the sentence a spec already contains into a continuously asserted runtime check, so a handoff between systems cannot fail silently while every component reports success.
+- · `rfc` [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Extract the assertion a requirement already contains into a continuously checked runtime invariant, so a handoff between systems cannot fail silently while every component reports success.
 
 ## typescript
 

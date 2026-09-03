@@ -25,7 +25,7 @@ Status: `✓` stable · `·` draft · `⚠` deprecated · `✕` superseded
 
 - · [AI observability](../kb/rfcs/0001-ai-observability.md) — Placeholder for a proposal on what to instrument, trace and evaluate in LLM-powered systems, and how it differs from conventional service observability.
 - · [Machine-readable specs as a second content tier](../kb/rfcs/0002-machine-readable-specs.md) — Add JSON-Schema-validated architecture specs and real template files beside the prose entries, so the KB holds constraints an agent can execute, not only advice it can read.
-- · [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Turn the sentence a spec already contains into a continuously asserted runtime check, so a handoff between systems cannot fail silently while every component reports success.
+- · [Spec-derived runtime invariants](../kb/rfcs/0003-spec-derived-invariants.md) — Extract the assertion a requirement already contains into a continuously checked runtime invariant, so a handoff between systems cannot fail silently while every component reports success.
 
 ## Decisions
 
